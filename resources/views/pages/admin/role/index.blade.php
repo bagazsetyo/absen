@@ -8,21 +8,21 @@
         <div class="card">
             <div class="card-body">
             <button
-                data-remote="{{ route('admin.user.create') }}"
+                data-remote="{{ route('admin.role.create') }}"
                 data-title="Create Group"
                 class="main-btn primary-btn btn-hover btn-sm mb-4"
                 data-bs-toggle="modal"
                 data-bs-target="#modal">
-                Tambah User
+                Tambah Role
             </button>
     
-            <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
+                <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>Email</th>
+                            <th>Izin</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -43,9 +43,9 @@
         ajax: "{{ url()->current() }}",
         columns: [
             {data: 'id', name: 'id', searchable: false, orderable: false, visible: false},
-            {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
+            {data: 'permissions', name: 'permissions'},
             {data: 'action', name: 'action', width: '200px', maxWidth: '200px', searchable: false, orderable: false,},
         ],
         responsive: true,

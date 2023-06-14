@@ -51,4 +51,6 @@ Route::prefix('admin')
         Route::group([], __DIR__ . '/admin/user.php');
         Route::group([], __DIR__ . '/admin/kelas.php');
         Route::group([], __DIR__ . '/admin/matkul.php');
+        Route::group([], __DIR__ . '/admin/role.php');
+        Route::group([], __DIR__ . '/admin/permission.php');
     });

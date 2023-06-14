@@ -3,25 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AngkatanRequest;
-use App\Models\Angkatan;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 
-class AngkatanController extends Controller
+class RoleController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      */
-    public function index(): mixed
+    public function index()
     {
         if(request()->ajax()){
-            $group = Angkatan::orderBy('id', 'desc');
-            return DataTables::of($group)
+            $data = Role::latest()->get();
+            return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $btn = '<div class="float-end">';
@@ -45,35 +40,29 @@ class AngkatanController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('permissions', function($data) {
+                    return $data->permissions->pluck('name')->implode(', ');
+                })
+                ->rawColumns(['action', 'permissions'])
                 ->make(true);
         }
-        // dd($this->authorize('index', Angkatan::class));
-        $this->authorize('add', Angkatan::class);
-        return view('pages.admin.angkatan.index');
+        return view('pages.admin.role.index');
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create()
     {
-        // $user = Auth::user();
-        // return $user->roles()->where('name', 'mahasiswa')->with('permissions')->get();
-        
-        $this->authorize('add', Angkatan::class);
-        return view('pages.admin.angkatan.create');
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AngkatanRequest $request): JsonResponse
+    public function store(Request $request)
     {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data berhasil ditambahkan!'
-        ]);
+        //
     }
 
     /**
@@ -89,7 +78,7 @@ class AngkatanController extends Controller
      */
     public function edit(string $id)
     {
-        
+        //
     }
 
     /**

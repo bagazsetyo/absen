@@ -45,6 +45,7 @@
               <a href="{{ route('admin.qrcode.index') }}"> Qrcode </a>
             </li>
           </ul>
+        </li>
           <li class="nav-item nav-item-has-children">
             <a
               href="#0"
@@ -62,16 +63,16 @@
                 <a href="{{ route('admin.user.index') }}"> User </a>
               </li>
               <li>
-                <a href="settings.html"> Permission </a>
+                <a href="{{ route('admin.role.index') }}"> Role </a>
               </li>
               <li>
-                <a href="settings.html"> Role </a>
+                <a href="{{ route('admin.permission.index') }}"> Permission </a>
               </li>
               <li>
                 <a href="settings.html"> File </a>
               </li>
             </ul>
-        </li>
+          </li>
       </ul>
     </nav>
   </aside>

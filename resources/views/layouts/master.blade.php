@@ -15,7 +15,7 @@
     @stack('before-style')
     @include('includes.style')
     @stack('after-style')
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/js/app.js'])
     <!-- ========== All CSS files linkup ========= -->
   </head>
   <body>

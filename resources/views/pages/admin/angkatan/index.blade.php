@@ -16,7 +16,7 @@
                 Tambah Group
             </button>
     
-                <table class="table" id="datatables">
+                <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -46,7 +46,7 @@
             {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
             {data: 'nama', name: 'nama'},
             {data: 'tahun', name: 'tahun'},
-            {data: 'action', name: 'action'},
+            {data: 'action', name: 'action', width: '200px', maxWidth: '200px', searchable: false, orderable: false,},
         ],
         responsive: true,
         autoWidth: false, 
