@@ -27,8 +27,6 @@
 @endpush
 
 @section('content')
-<form action="{{ route('admin.qrcode.store') }}" method="post">
-    @csrf
     <div class="container-fluid">
         <div class="pt-30">
             <div class="card">
@@ -44,43 +42,34 @@
                     <div class="form pt-30">
                         <div class="input-style-1">
                             <label>Name</label>
-                            <input type="text" placeholder="Nama" name="nama" required />
+                            <input type="text" placeholder="Nama" />
                         </div>
                         <div class="select-style-1 ">
                             <label>Angkatan</label>
                             <div class="select-position">
-                                <select class="angkatan" name="angkatan" required >
-                                    <option value="">Pilih</option>
-                                    @foreach ($angkatan as $a)
-                                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
-                                    @endforeach
+                                <select class="angkatan" name="state">
+                                    <option value="AL">Alabama</option>
+                                    <option value="WY">Wyoming</option>
                                 </select>
                             </div>
                         </div>
                         <div class="select-style-1 ">
                             <label>Matkul</label>
                             <div class="select-position">
-                                <select class="matkul" name="matkul" required >
-                                    <option value="">Pilih</option>
-                                    @foreach ($matkul as $m)
-                                        <option value="{{ $m->id }}">{{ $m->nama }}</option>
-                                    @endforeach
+                                <select class="matkul" name="state">
+                                    <option value="AL">Alabama</option>
+                                    <option value="WY">Wyoming</option>
                                 </select>
                             </div>
                         </div>
                         <div class="select-style-1 ">
                             <label>Kelas</label>
-                            <div class="select-position" >
-                                <select class="kelas" name="kelas" required >
-                                    <option value="">Pilih</option>
-                                    @foreach ($kelas as $k)
-                                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                                    @endforeach
+                            <div class="select-position">
+                                <select class="kelas" name="state">
+                                    <option value="AL">Alabama</option>
+                                    <option value="WY">Wyoming</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="select-style-1 ">
-                            <textarea name="jsonData" class="jsonData" id="" style="display: none;" required ></textarea>
                         </div>
                     </div>
 
@@ -104,15 +93,10 @@
                             <tbody></tbody>
                         </table>
                     </div>
-
-                    <div class="">
-                        <button class="main-btn primary-btn btn-hover btn-sm mb-4" type="submit">Submit</button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-</form>
 @endsection
 
 @push('after-script')
@@ -310,9 +294,35 @@
             }
             jsonData = [];
             jsonData.push(...dataPertemuan);
-            $('.jsonData').val(JSON.stringify(jsonData));
 
+            // reload data table 
             datatables.clear().rows.add(jsonData).draw();
+
+
+            // for(i = 0; i < totalPertemuan; i++){
+            //     date.setDate(date.getDate() + satuMinggu);
+            //     console.log(date);
+            // }
+
+
+            // console.log(data);
+            // var table = document.getElementById("data");
+            // var row = table.insertRow(1);
+            // var cell1 = row.insertCell(0);
+            // var cell2 = row.insertCell(1);
+            // var cell3 = row.insertCell(2);
+            // var cell4 = row.insertCell(3);
+            // var cell5 = row.insertCell(4);
+
+            // cell1.innerHTML = "1";
+            // cell2.innerHTML = data.teaching_id;
+            // cell3.innerHTML = data.period_id;
+            // cell4.innerHTML = data.date;
+            // cell5.innerHTML = data.meeting_to;
         }
     </script>
 @endpush
+
+
+2023061093639
+20230610093639

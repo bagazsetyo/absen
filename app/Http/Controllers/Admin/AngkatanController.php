@@ -49,7 +49,7 @@ class AngkatanController extends Controller
                 ->make(true);
         }
         // dd($this->authorize('index', Angkatan::class));
-        $this->authorize('add', Angkatan::class);
+        // $this->authorize('add', Angkatan::class);
         return view('pages.admin.angkatan.index');
     }
 
@@ -61,7 +61,7 @@ class AngkatanController extends Controller
         // $user = Auth::user();
         // return $user->roles()->where('name', 'mahasiswa')->with('permissions')->get();
         
-        $this->authorize('add', Angkatan::class);
+        // $this->authorize('add', Angkatan::class);
         return view('pages.admin.angkatan.create');
     }
 
@@ -70,6 +70,8 @@ class AngkatanController extends Controller
      */
     public function store(AngkatanRequest $request): JsonResponse
     {
+        Angkatan::create($request->all('nama', 'tahun'));
+        
         return response()->json([
             'status' => 'success',
             'message' => 'Data berhasil ditambahkan!'
@@ -89,15 +91,24 @@ class AngkatanController extends Controller
      */
     public function edit(string $id)
     {
-        
+        $data = Angkatan::findOrFail($id);
+        return view('pages.admin.angkatan.edit')->with([
+            'data' => $data,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AngkatanRequest $request, string $id)
     {
-        //
+        $data = Angkatan::findOrFail($id);
+        $data->update($request->all('nama', 'tahun'));
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil diubah!'
+        ]);
     }
 
     /**
@@ -105,6 +116,12 @@ class AngkatanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = Angkatan::findOrFail($id);
+        $data->delete();
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus!'
+        ]);
     }
 }

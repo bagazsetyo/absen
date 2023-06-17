@@ -65,15 +65,36 @@ aria-labelledby="myModalLabel1" aria-hidden="true">
     $('#danger').on('show.bs.modal',function (event) {
         var button = $(event.relatedTarget);
         var modal = $(this);
-        // // add spiner if data onload
-        // modal.find('.modal-body').html('<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>');
-        // modal.find('.modal-body').load(button.data('remote'));
-        // modal.find('.modal-title').text(button.data('title'));
-        console.log(button.data('remote'));
-
-        // check if click hapus button by hapus-data class
-        $('.hapus-data').click(function () {
-            console.log('hapus');
+        url = button.data('remote')
+    })
+    $('.hapus-data').click(function () {
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        console.log(csrfToken);
+        $.ajax({
+            url: url,
+            type: 'delete',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            beforeSend: function() {
+                $('#tombol-hapus').text('Hapus Data');
+            },
+            success: (response) => {
+                if (response) {
+                    $('#danger').modal('hide');
+                    
+                    $('#datatables').DataTable().ajax.reload();
+                    const toastElement = document.querySelector('.toast');
+                    toastElement.classList.add('bg-success');
+                    const toast = new bootstrap.Toast(toastElement);
+                    const toastBodyElement = toastElement.querySelector('.toast-body').innerHTML =
+                        response.message;
+                    toast.show();
+                }
+            },
+            error: function(response) {
+                swal('Success', response.data, response.code)
+            }
         })
     })
 </script>

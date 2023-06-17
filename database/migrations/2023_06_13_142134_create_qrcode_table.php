@@ -14,21 +14,23 @@ return new class extends Migration
         Schema::create('qrcode', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('id_angkatan');
-            $table->integer('id_kelas');
-            $table->integer('id_matkul');
+            $table->string('id_angkatan');
+            $table->string('id_kelas');
+            $table->string('id_matkul');
 
+
+            $table->string('nama');
             $table->integer('teachingId');
             $table->integer('periodId');
-            $table->integer('date');
+            $table->string('date');
             $table->integer('meetingTo');
-            $table->integer('tahu');
+            $table->integer('tahun');
             $table->integer('bulan');
             $table->integer('tanggal');
             $table->integer('jam');
             $table->integer('menit');
             $table->integer('detik');
-            $table->string('uniqueCode');
+            $table->longText('uniqueCode');
 
             $table->timestamps();
         });

@@ -13,6 +13,6 @@ class Angkatan extends Model
 
     protected $fillable = [
         'tahun',
-        'keterangan',
+        'nama',
     ];
 }

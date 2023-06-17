@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AngkatanRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class AngkatanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,11 @@ class AngkatanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama' => [
+                'required',
+                Rule::unique('angkatan')->ignore($this->angkatan),
+            ],
+            'tahun' => 'required',
         ];
     }
 }

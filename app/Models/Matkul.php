@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Matkul extends Model
 {
     use HasFactory;
+
+    protected $table = 'matkul';
+
+    protected $fillable = [
+        'nama',
+        'kode',
+        'jadwal',
+        'jam_mulai',
+        'jam_selesai',
+    ];
+
 }
