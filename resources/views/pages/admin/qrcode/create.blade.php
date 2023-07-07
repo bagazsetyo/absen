@@ -46,6 +46,15 @@
                             <label>Name</label>
                             <input type="text" placeholder="Nama" name="nama" required />
                         </div>
+                        <div class="input-style-1">
+                            <label>Minggu</label>
+                            <input type="text" placeholder="Nama" name="minggu" value="14" />
+                        </div>
+                        <div class="input-style-1">
+                            <label>Libur</label>
+                            <input type="text" placeholder="libur" name="libur" value="" />
+                            <span class="text-muted">gunakan (,) untuk membuat multiple minggu libur</span>
+                        </div>
                         <div class="select-style-1 ">
                             <label>Angkatan</label>
                             <div class="select-position">
@@ -88,10 +97,10 @@
                         <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
                             <thead>
                                 <tr>
+                                    <th>Meeting To</th>
                                     <th>Teaching Id</th>
                                     <th>Periode Id</th>
                                     <th>Date</th>
-                                    <th>Meeting To</th>
                                     <th>Year</th>
                                     <th>Month</th>
                                     <th>Date</th>
@@ -122,6 +131,13 @@
         const canvas = document.getElementById('canvas');
         const resultDiv = document.getElementById('result');
         const decodedResultDiv = document.getElementById('decoded-result');
+        
+        let totalPertemuan = 14;
+        let satuMinggu = 7;
+        let libur = [];
+
+        let qrcodeData = "";
+
         const namaBulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
@@ -132,7 +148,11 @@
             data: jsonData,
             responsive: true,
             autoWidth: false,
-            columns: [{
+            columns: [
+                {
+                    data: 'meetingTo'
+                },
+                {
                     data: 'teachingId'
                 },
                 {
@@ -140,9 +160,6 @@
                 },
                 {
                     data: 'date'
-                },
-                {
-                    data: 'meetingTo'
                 },
                 {
                     data: 'tahun'
@@ -164,13 +181,16 @@
                     data: 'jam'
                 },
                 {
-                    data: 'menit'
+                    data: 'menit',
+                    visible: false
                 },
                 {
-                    data: 'detik'
+                    data: 'detik',
+                    visible: false
                 },
                 {
-                    data: 'uniqueCode'
+                    data: 'uniqueCode',
+                    visible: false
                 },
             ]
         });
@@ -239,6 +259,7 @@
                             second: splittedArray[6]
                         };
                         decodedResultDiv.innerText = JSON.stringify(jsonData);
+                        qrcodeData = jsonData;
                         tableList(jsonData);
                     } else {
                         resultDiv.innerText = 'QR code not found';
@@ -252,10 +273,6 @@
         }
 
         function tableList(data) {
-            let totalPertemuan = 14;
-            let totalPertemuanSekarang = 0;
-            let satuMinggu = 7;
-
             const dateString = data.date;
             const dateArray = [
                 parseInt(dateString.substring(0, 4)),
@@ -272,13 +289,22 @@
             date.setDate(date.getDate() - selisih);
 
             let teachingId = parseInt(data.teachingId) - parseInt(data.meetingTo);
+            teachingId += 1;
+
+            // counter minggu 
+            let minggu = 0;
 
             let dataPertemuan = [];
             for (i = 1; i <= totalPertemuan; i++) {
-                let thisTeachingId = teachingId + i;
 
                 let dateEveryWeek = new Date(date);
                 dateEveryWeek.setDate(dateEveryWeek.getDate() + (satuMinggu * i));
+
+                if (libur.length > 0) {
+                    if (libur.includes(i)) {
+                        continue;
+                    }
+                }
 
                 let thisYear = dateEveryWeek.getFullYear();
                 let thisMonth = String(dateEveryWeek.getMonth() + 1).padStart(2, '0');
@@ -289,13 +315,18 @@
 
                 let fullDate = `${thisYear}${thisMonth}${thisDate}${thisHour}${thisMinute}${thisSecond}`;
 
+                let thisTeachingId = teachingId++;
                 let uniqueCode = `teachingId:${thisTeachingId}|periodId:${data.periodId}|date:${fullDate}|meetingTo:${i}`;
                 let uniqueCodeBase64 = btoa(uniqueCode);
+
+                // increament minggu 
+                minggu++
+
                 let mainData = {
                     teachingId: thisTeachingId,
                     periodId: data.periodId,
                     date: fullDate,
-                    meetingTo: i,
+                    meetingTo: minggu,
                     tahun: thisYear,
                     bulan: thisMonth,
                     tanggal: thisDate,
@@ -303,7 +334,7 @@
                     menit: thisMinute,
                     detik: thisSecond,
                     uniqueCode: uniqueCodeBase64,
-                    minggu_ke: i
+                    minggu_ke: minggu
                 };
 
                 dataPertemuan.push(mainData);
@@ -314,5 +345,60 @@
 
             datatables.clear().rows.add(jsonData).draw();
         }
+
+        // on change libur dan masuk berap minggu
+        $('input[name="minggu"]').on('change', function() {
+            totalPertemuan = $(this).val();
+
+            if(libur.length > 0){
+                let newLibur = [];
+                for (let i = 0; i <= libur.length; i++) {
+                    if(libur[i] < totalPertemuan){
+                        newLibur.push(libur[i]);
+                    }
+                }
+                libur = newLibur;
+                let valueLibur = libur.join(',');
+                $('input[name="libur"]').val(valueLibur);
+            }
+
+            if(qrcodeData){
+                tableList(qrcodeData);
+            }
+        });
+
+        $('input[name="libur"]').on('change', function() {
+            var listLibur = $(this).val();
+            libur = [];
+            libur = listLibur.split(',');
+
+            // loop dengan for
+            for (let i = 0; i < libur.length; i++) {
+                if(libur[i] > totalPertemuan){
+                    alert('Libur tidak boleh lebih dari total pertemuan');
+                    libur = [];
+                    break;
+                }
+                libur[i] = parseInt(libur[i]);
+            }
+
+            // group jika ada yang sama 
+            libur = libur.filter((item, index) => libur.indexOf(item) === index);
+            // join kembali
+            libur.sort(function(a, b){return a - b});
+            let valueLibur = libur.join(',');
+            $(this).val(valueLibur);
+
+            if(libur.length > 0){
+                totalPertemuan = parseInt(libur.length) + parseInt(totalPertemuan);
+                $('input[name="minggu"]').val(totalPertemuan);
+            }
+
+            if(qrcodeData){
+
+                tableList(qrcodeData);
+            }
+        });
+
     </script>
 @endpush

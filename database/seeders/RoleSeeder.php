@@ -32,5 +32,10 @@ class RoleSeeder extends Seeder
             'name' => 'dosen',
             'guard_name' => 'web'
         ]);
+
+        Role::create([
+            'name' => 'ban',
+            'guard_name' => 'web'
+        ]);
     }
 }

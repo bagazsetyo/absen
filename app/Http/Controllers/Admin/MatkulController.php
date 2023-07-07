@@ -16,7 +16,7 @@ class MatkulController extends Controller
     public function index()
     {
         if(request()->ajax()){
-            $group = Matkul::orderBy('id', 'desc');
+            $group = Matkul::query();
             return DataTables::of($group)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){

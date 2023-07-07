@@ -14,15 +14,15 @@ class RoleHasPermissionSeeder extends Seeder
     public function run(): void
     {
         $role = Role::findByName('superadmin');
-        $role->givePermissionTo(['create', 'read', 'update', 'delete']);
+        // $role->givePermissionTo(['create', 'read', 'update', 'delete']);
 
         $role = Role::findByName('admin');
-        $role->givePermissionTo(['create', 'read', 'update', 'delete']);
+        // $role->givePermissionTo(['create', 'read', 'update', 'delete']);
 
         $role = Role::findByName('mahasiswa');
-        $role->givePermissionTo(['read']);
+        // $role->givePermissionTo(['read']);
 
         $role = Role::findByName('dosen');
-        $role->givePermissionTo(['read']);
+        // $role->givePermissionTo(['read']);
     }
 }
