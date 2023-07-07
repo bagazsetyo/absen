@@ -23,6 +23,9 @@ class QrcodeController extends Controller
     {
         try {
             $data = $this->qrcodeServices->getCode($request);
+            if($data['code'] != Response::HTTP_OK){
+                return Response::responseError($data['message'], $data['code']);
+            }
             return Response::responseMessage(new QrcodeResource($data), $data['code']);
         }catch(\Exception $e){
             return Response::responseError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

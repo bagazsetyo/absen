@@ -7,4 +7,5 @@ return [
     'deleted' => 'Data berhasil dihapus',
     'updated' => 'Updated.',
     'created' => 'Created.',
+    'qrcodeNotFound' => 'Qrcode tidak ditemukan',
 ];

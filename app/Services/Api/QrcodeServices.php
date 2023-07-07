@@ -34,6 +34,9 @@ class QrcodeServices
         
         // initial qrcode
         $qrcode = $this->getQrcode();
+        if($qrcode['code'] != Response::HTTP_OK){
+            return $qrcode;
+        }
         
         $caption = $this->captionQrcode($request->message);
         return [
@@ -45,7 +48,7 @@ class QrcodeServices
 
     protected function getQrcode()
     {
-        $date = date('Y-m-d', strtotime('2023-07-10'));
+        $date = date('Y-m-d');
         list($year, $month, $day) = explode('-', $date);
 
         $qrcode = Qrcode::where('id_kelas', $this->user->kelas)
@@ -56,9 +59,15 @@ class QrcodeServices
                     ->with('matkul')
                     ->get();
 
+        if($qrcode->isEmpty()){
+            return [
+                'code' => Response::HTTP_NOT_FOUND,
+                'message' => __('messages.qrcodeNotFound')
+            ];
+        }
         // loop qrcode 
         foreach ($qrcode as $key => $value) {
-            if(date('H:i:s', strtotime('19:20:00')) >= $value->matkul->jam_mulai && date('H:i:s', strtotime('19:20')) <= $value->matkul->jam_selesai){
+            if(date('H:i:s') >= $value->matkul->jam_mulai && date('H:i:s') <= $value->matkul->jam_selesai){
                 $this->qrcode = $value;
                 break;
             } 
