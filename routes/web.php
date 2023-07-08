@@ -34,16 +34,11 @@ require __DIR__.'/auth.php';
 
 Route::get('angkatan', [AngkatanController::class, 'index'])->name('index');
 Route::get('angkatan/create', [AngkatanController::class, 'create'])->name('create');
-// Route::get('angkatan/{id}', [AngkatanController::class, 'show'])->name('show');
-// Route::post('angkatan/store', [AngkatanController::class, 'store'])->name('store');
-// Route::get('angkatan/{id}/edit', [AngkatanController::class, 'edit'])->name('edit');
-// Route::put('angkatan/{id}/update', [AngkatanController::class, 'update'])->name('update');
-// Route::delete('angkatan/destroy', [AngkatanController::class, 'destroy'])->name('destroy');
 
 
 Route::prefix('admin')
     ->as('admin.')
-    ->middleware('auth')
+    ->middleware('auth', 'isAdmin')
     ->group(function () {
         Route::group([], __DIR__ . '/admin/dashboard.php');
         Route::group([], __DIR__ . '/admin/qrcode.php');
@@ -53,4 +48,12 @@ Route::prefix('admin')
         Route::group([], __DIR__ . '/admin/matkul.php');
         Route::group([], __DIR__ . '/admin/role.php');
         Route::group([], __DIR__ . '/admin/permission.php');
+    });
+
+
+Route::prefix('mahasiswa')
+    ->as('mahasiswa.')
+    ->middleware('auth')
+    ->group(function () {
+        Route::group([], __DIR__ . '/mahasiswa/qrcode.php');
     });

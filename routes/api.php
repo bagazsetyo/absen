@@ -19,6 +19,7 @@ Route::prefix('v1')
     ->group(function () {
         Route::controller(QrcodeController::class)
             ->group(function(){
-                Route::get('qrcode', 'getCode');
+                Route::post('qrcode', 'getCode');
+                Route::get('qrcodetes', 'getCode');
         });
     });

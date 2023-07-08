@@ -17,11 +17,30 @@ class QrcodeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): mixed
-    {
+    public function index(Request $request): mixed
+    {   
         
         if(request()->ajax()){
-            $group = Qrcode::orderBy('id', 'desc')->with(['angkatan', 'kelas', 'matkul'])->get();
+            $group = Qrcode::orderBy('id', 'desc')->with(['angkatan', 'kelas', 'matkul']);
+
+            $group = $group->where(function ($query) use ($request) {
+                if($request->filterKelas){
+                    $query->where('id_kelas', $request->filterKelas);
+                }
+                if($request->filterAngkatan){
+                    $query->where('id_angkatan', $request->filterAngkatan);
+                }
+                if($request->filterMatkul){
+                    $query->where('id_matkul', $request->filterMatkul);
+                }
+                if($request->filterHari){
+                    list($tahun, $bulan, $tanggal) = explode("-", $request->filterHari);
+                    $query->where('tahun', $tahun);
+                    $query->where('bulan', $bulan);
+                    $query->where('tanggal', $tanggal);
+                }
+            })->get();
+
             return DataTables::of($group)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -49,7 +68,15 @@ class QrcodeController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('pages.admin.qrcode.index');
+
+        $angkatan = Angkatan::all();
+        $kelas = Kelas::all();
+        $matkul = Matkul::all();
+        return view('pages.admin.qrcode.index')->with([
+            'angkatan' => $angkatan,
+            'kelas' => $kelas,
+            'matkul' => $matkul,
+        ]);
     }
 
     /**

@@ -34,7 +34,7 @@ class QrcodeServices
         
         // initial qrcode
         $qrcode = $this->getQrcode();
-        if($qrcode['code'] != Response::HTTP_OK){
+        if(isset($qrcode['code']) && $qrcode['code'] != Response::HTTP_OK){
             return $qrcode;
         }
         
@@ -109,15 +109,14 @@ class QrcodeServices
         $matkul = $this->qrcode->matkul;
         $caption = "";
         $caption .= "Hai {$this->user->name}, \n";
-        $caption .= "Qrcode untuk mata kuliah {$matkul->nama} \n";
         $caption .= "Jam : {$matkul->jam_mulai} - {$matkul->jam_selesai} \n";
-        $caption .= "Kode : {$this->qrcode->uniqueCode} \n";
-        $caption .= "\n\n";
-        $caption .= "Silahkan scan qrcode diatas untuk absen \n";
-        $caption .= "sebelum jam {$matkul->jam_selesai} \n";
-        $caption .= "\n\n";
-        $caption .= "*Kami tidak bertanggung jawab atas keterlambatan anda \n";
-        $caption .= "untuk absen \n";
+        $caption .= "Matkul : {$matkul->nama} \n";
+        $caption .= "\n";
+        $caption .= "Silahkan scan qrcode diatas untuk absen ";
+        $caption .= "sebelum jam {$matkul->jam_selesai}. apabila sudah diabsenkan oleh dosen,";
+        $caption .= "maka qrcode akan otomatis tidak berlaku. Segera hubungi dosen jika terjadi kesalahan. ";
+        $caption .= "*Kami tidak bertanggung jawab atas keterlambatan anda";
+        $caption .= "untuk absen*";
 
         return $caption;
     }

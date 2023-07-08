@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -27,8 +28,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'wa' => ['required'],
         ];
     }
 
@@ -41,14 +41,25 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // if (! Auth::attempt($this->only('wa'), $this->boolean('remember'))) {
+        //     RateLimiter::hit($this->throttleKey());
+
+        //     throw ValidationException::withMessages([
+        //         'wa' => trans('auth.failed'),
+        //     ]);
+        // }
+
+        $user = User::where('wa', $this->wa)->orWhere('npm', $this->wa)->first();
+        
+        if(!$user){
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'wa' => trans('auth.failed'),
             ]);
         }
 
+        Auth::login($user, $this->boolean('remember'));
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -80,6 +91,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('wa')).'|'.$this->ip());
     }
 }

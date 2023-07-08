@@ -7,5 +7,6 @@ return [
     'deleted' => 'Data berhasil dihapus',
     'updated' => 'Updated.',
     'created' => 'Created.',
-    'qrcodeNotFound' => 'Qrcode tidak ditemukan',
+    'qrcodeNotFound' => "Qrcode tidak ditemukan \nTidak terdapat jadwal pada hari ini",
+    'userNotFound' => 'User tidak ditemukan, silahkan daftar terlebih dahulu',
 ];

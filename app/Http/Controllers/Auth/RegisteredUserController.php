@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Angkatan;
+use App\Models\Kelas;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -15,12 +17,18 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    protected $role = 'mahasiswa';
     /**
      * Display the registration view.
      */
     public function create(): View
     {
-        return view('auth.register');
+        $angkatan = Angkatan::all();
+        $kelas = Kelas::all();
+        return view('auth.register')->with([
+            'angkatan' => $angkatan,
+            'kelas' => $kelas,
+        ]);
     }
 
     /**
@@ -32,15 +40,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'wa' => ['required', 'string', 'max:255', 'unique:users'],
+            'npm' => ['required', 'string', 'max:255', 'unique:users'],
+            'angkatan' => ['required'],
+            'kelas' => ['required'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'wa' => $request->wa,
+            'npm' => $request->npm,
+            'angkatan' => $request->angkatan,
+            'kelas' => $request->kelas,
         ]);
+
+        $user->assignRole($this->role);
 
         event(new Registered($user));
 
