@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
 
         $kelas = Kelas::create([
             'nama' => 'B - Teknik Informatika',
+            'id_angkatan' => $angkatan->id,
         ]);
 
         $user = User::create([

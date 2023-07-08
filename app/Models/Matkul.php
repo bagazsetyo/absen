@@ -17,6 +17,7 @@ class Matkul extends Model
         'jadwal',
         'jam_mulai',
         'jam_selesai',
+        'id_kelas'
     ];
 
 }

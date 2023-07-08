@@ -9,11 +9,11 @@
             <div class="card-body">
             <button
                 data-remote="{{ route('admin.matkul.create') }}"
-                data-title="Create Group"
+                data-title="Tambah Mata Kuliah"
                 class="main-btn primary-btn btn-hover btn-sm mb-4"
                 data-bs-toggle="modal"
                 data-bs-target="#modal">
-                Tambah Group
+                Tambah Mata Kuliah
             </button>
     
                 <table class="table dt-responsive nowrap" id="datatables" style="width:100%">

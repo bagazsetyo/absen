@@ -20,6 +20,6 @@ Route::prefix('v1')
         Route::controller(QrcodeController::class)
             ->group(function(){
                 Route::post('qrcode', 'getCode');
-                Route::get('qrcodetes', 'getCode');
+                // Route::get('qrcodetes', 'getCode');
         });
     });

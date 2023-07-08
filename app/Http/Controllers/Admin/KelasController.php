@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Angkatan;
 use App\Models\Kelas;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -54,7 +55,10 @@ class KelasController extends Controller
      */
     public function create(): View
     {
-        return view('pages.admin.kelas.create');
+        $angkatan = Angkatan::all();
+        return view('pages.admin.kelas.create')->with([
+            'angkatan' => $angkatan
+        ]);
     }
 
     /**
@@ -62,7 +66,7 @@ class KelasController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        Kelas::create($request->only('nama'));
+        Kelas::create($request->only(['nama', 'id_angkatan']));
 
         return response()->json([
             'success' => true,
@@ -83,9 +87,11 @@ class KelasController extends Controller
      */
     public function edit(string $id)
     {
+        $angkatan = Angkatan::all();
         $data = Kelas::findOrFail($id);
         return view('pages.admin.kelas.edit')->with([
-            'data' => $data
+            'data' => $data,
+            'angkatan' => $angkatan
         ]);
     }
 
@@ -94,7 +100,7 @@ class KelasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        Kelas::findOrFail($id)->update($request->only('nama'));
+        Kelas::findOrFail($id)->update($request->only(['nama', 'id_angkatan']));
 
         return response()->json([
             'success' => true,

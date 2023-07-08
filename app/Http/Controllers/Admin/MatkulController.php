@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Angkatan;
+use App\Models\Kelas;
 use App\Models\Matkul;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -53,7 +55,10 @@ class MatkulController extends Controller
      */
     public function create(): View
     {
-        return view('pages.admin.matkul.create');
+        $angkatan = Angkatan::all();
+        return view('pages.admin.matkul.create')->with([
+            'angkatan' => $angkatan,
+        ]);
     }
 
     /**
@@ -67,6 +72,7 @@ class MatkulController extends Controller
             'jadwal',
             'jam_mulai',
             'jam_selesai',
+            'id_kelas'
         ]));
 
         return response()->json([
@@ -88,9 +94,11 @@ class MatkulController extends Controller
      */
     public function edit(string $id)
     {
+        $kelas = Kelas::all();
         $data = Matkul::findOrFail($id);
         return view('pages.admin.matkul.edit')->with([
             'data' => $data,
+            'kelas' => $kelas,
         ]);
     }
 
@@ -105,6 +113,7 @@ class MatkulController extends Controller
             'jadwal',
             'jam_mulai',
             'jam_selesai',
+            'id_kelas'
         ]));
 
         return response()->json([

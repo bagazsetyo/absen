@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('jadwal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
+            $table->string('id_kelas');
             $table->timestamps();
         });
     }

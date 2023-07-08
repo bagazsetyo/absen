@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Angkatan;
 use App\Models\Kelas;
 use App\Models\Matkul;
 use App\Models\Qrcode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
@@ -19,14 +21,22 @@ class QrcodeController extends Controller
      */
     public function index(Request $request): mixed
     {   
-        
+        $isAdmin = Helper::isAdmin();
+
         if(request()->ajax()){
             $group = Qrcode::orderBy('id', 'desc')->with(['angkatan', 'kelas', 'matkul']);
 
-            $group = $group->where(function ($query) use ($request) {
+            $group = $group->where(function ($query) use ($request, $isAdmin) {
                 if($request->filterKelas){
                     $query->where('id_kelas', $request->filterKelas);
                 }
+                
+                if(!$isAdmin){
+                    $query->where('id_kelas', Auth::user()->id_kelas);
+                }
+
+
+
                 if($request->filterAngkatan){
                     $query->where('id_angkatan', $request->filterAngkatan);
                 }
@@ -71,7 +81,14 @@ class QrcodeController extends Controller
 
         $angkatan = Angkatan::all();
         $kelas = Kelas::all();
-        $matkul = Matkul::all();
+        
+        $matkul = Matkul::query();
+        if(!$isAdmin){
+            $matkul->where('id_kelas', Auth::user()->id_kelas);
+        }
+
+        $matkul = $matkul->get();
+
         return view('pages.admin.qrcode.index')->with([
             'angkatan' => $angkatan,
             'kelas' => $kelas,

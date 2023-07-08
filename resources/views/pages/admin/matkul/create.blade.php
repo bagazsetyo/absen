@@ -9,6 +9,25 @@
             <label for="kode">Kode</label>
             <input type="text" name="kode" id="kode" class="form-control" placeholder="TI">
         </div>
+        <div class="select-style-1">
+            <label for="filterAngkatan">Angktan:</label>
+            <div class="select-position">
+                <select id="filterAngkatan" name="id_angkatan">
+                    <option value="">pilih</option>
+                    @foreach ($angkatan as $a)
+                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="select-style-1">
+            <label for="filterKelas">Kelas:</label>
+            <div class="select-position">
+                <select id="filterKelas" name="id_kelas">
+                    <option value="">pilih</option>
+                </select>
+            </div>
+        </div>
         <div class="input-style-1">
             <label for="group">Jadwal</label>
             <input type="date" name="jadwal">
@@ -27,6 +46,25 @@
     </form>
 </div>
 <script>
+
+    $('#filterAngkatan').on('change', function(e){
+        $.ajax({
+            url: "{{ route('admin.filter.kelas') }}",
+            type: "POST",
+            data: {
+                angkatan: $(this).val(),
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(data) {
+                let filterKelas = $('#filterKelas');
+                filterKelas.empty();
+                filterKelas.append('<option value="">pilih</option>');
+                $.each(data, function(key, value) {
+                    filterKelas.append('<option value="' + value.id + '">' + value.nama + '</option>');
+                });
+            }
+        })
+    })
 
     $('#createGroup').submit(function(e) {
         e.preventDefault();

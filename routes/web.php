@@ -35,6 +35,13 @@ require __DIR__.'/auth.php';
 Route::get('angkatan', [AngkatanController::class, 'index'])->name('index');
 Route::get('angkatan/create', [AngkatanController::class, 'create'])->name('create');
 
+Route::prefix('admin')
+    ->as('admin.')
+    ->group(function () {
+        Route::group([], __DIR__ . '/admin/filter.php');
+    });
+
+
 
 Route::prefix('admin')
     ->as('admin.')

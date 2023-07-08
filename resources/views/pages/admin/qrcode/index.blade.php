@@ -24,18 +24,7 @@
                     @endif
 
                     <div class="row">
-                        <div class="select-style-1 col-6 col-lg-3">
-                            <label for="filterKelas">Kelas:</label>
-                            <div class="select-position">
-                                <select id="filterKelas">
-                                    <option value="">Semua</option>
-                                    @foreach ($kelas as $k)
-                                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
+                        @if(Helper::isAdmin())
                         <div class="select-style-1 col-6 col-lg-3">
                             <label for="filterAngkatan">Filter Angkatan:</label>
                             <div class="select-position">
@@ -47,6 +36,19 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="select-style-1 col-6 col-lg-3">
+                            <label for="filterKelas">Kelas:</label>
+                            <div class="select-position">
+                                <select id="filterKelas">
+                                    <option value="">Semua</option>
+                                    @foreach ($kelas as $k)
+                                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @endif
 
                         <div class="select-style-1 col-6 col-lg-3">
                             <label for="filterMatkul">Filter Matkul:</label>
@@ -90,16 +92,54 @@
 
 @push('after-script')
     <script>
-        var filterKelas = $('#filterKelas');
         var filterAngkatan = $('#filterAngkatan');
+        var filterKelas = $('#filterKelas');
         var filterMatkul = $('#filterMatkul');
         var filterHari = $('#filterHari');
 
-        filterKelas.on('change', function() {
+        filterAngkatan.on('change', function() {
+            $.ajax({
+                url: "{{ route('admin.filter.kelas') }}",
+                type: "POST",
+                data: {
+                    angkatan: $(this).val(),
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(data) {
+                    let filterKelas = $('#filterKelas');
+                    filterKelas.empty();
+                    filterMatkul.empty();
+
+                    filterKelas.append('<option value="">pilih</option>');
+                    filterMatkul.append('<option value="">pilih</option>');
+                    $.each(data, function(key, value) {
+                        filterKelas.append('<option value="' + value.id + '">' + value.nama + '</option>');
+                    });
+                }
+            })
+
             table.draw();
         });
 
-        filterAngkatan.on('change', function() {
+        filterKelas.on('change', function() {
+            $.ajax({
+                url: "{{ route('admin.filter.matkul') }}",
+                type: "POST",
+                data: {
+                    kelas: $(this).val(),
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(data) {
+                    let filterMatkul = $('#filterMatkul');
+                    filterMatkul.empty();
+
+                    filterMatkul.append('<option value="">pilih</option>');
+                    $.each(data, function(key, value) {
+                        filterMatkul.append('<option value="' + value.id + '">' + value.nama + '</option>');
+                    });
+                }
+            })
+
             table.draw();
         });
 

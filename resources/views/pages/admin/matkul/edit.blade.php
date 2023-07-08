@@ -10,6 +10,25 @@
             <label for="kode">Kode</label>
             <input type="text" name="kode" id="kode" value="{{ $data->kode }}" class="form-control" placeholder="TI">
         </div>
+        <div class="select-style-1">
+            <label for="filterAngkatan">Angktan:</label>
+            <div class="select-position">
+                <select id="filterAngkatan" name="id_angkatan">
+                    <option value="">pilih</option>
+                    @foreach ($angkatan as $a)
+                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="select-style-1">
+            <label for="filterKelas">Kelas:</label>
+            <div class="select-position">
+                <select id="filterKelas" name="id_kelas">
+                    <option value="">pilih</option>
+                </select>
+            </div>
+        </div>
         <div class="input-style-1">
             <label for="group">Jadwal</label>
             <input type="date" name="jadwal" value="{{ $data->jadwal }}">

@@ -27,101 +27,92 @@
 @endpush
 
 @section('content')
-<form action="{{ route('admin.qrcode.store') }}" method="post">
-    @csrf
-    <div class="container-fluid">
-        <div class="pt-30">
-            <div class="card">
-                <div class="card-body">
-                    <div id="drop-area">
-                        <h3>Drag and Drop QR Code Image Here<br>or Click to Select File</h3>
-                        <input type="file" accept="image/*" id="qr-input" style="display: none;">
-                    </div>
-                    <canvas id="canvas" style="display: none;"></canvas>
-                    <div id="result"></div>
-                    <div id="decoded-result"></div>
+    <form action="{{ route('admin.qrcode.store') }}" method="post">
+        @csrf
+        <div class="container-fluid">
+            <div class="pt-30">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="drop-area">
+                            <h3>Drag and Drop QR Code Image Here<br>or Click to Select File</h3>
+                            <input type="file" accept="image/*" id="qr-input" style="display: none;">
+                        </div>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <div id="result"></div>
+                        <div id="decoded-result"></div>
 
-                    <div class="form pt-30">
-                        <div class="input-style-1">
-                            <label>Name</label>
-                            <input type="text" placeholder="Nama" name="nama" required />
-                        </div>
-                        <div class="input-style-1">
-                            <label>Minggu</label>
-                            <input type="text" placeholder="Nama" name="minggu" value="14" />
-                        </div>
-                        <div class="input-style-1">
-                            <label>Libur</label>
-                            <input type="text" placeholder="libur" name="libur" value="" />
-                            <span class="text-muted">gunakan (,) untuk membuat multiple minggu libur</span>
-                        </div>
-                        <div class="select-style-1 ">
-                            <label>Angkatan</label>
-                            <div class="select-position">
-                                <select class="angkatan" name="angkatan" required >
-                                    <option value="">Pilih</option>
-                                    @foreach ($angkatan as $a)
-                                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
-                                    @endforeach
-                                </select>
+                        <div class="form pt-30">
+                            <div class="input-style-1">
+                                <label>Name</label>
+                                <input type="text" placeholder="Nama" name="nama" required />
+                            </div>
+                            <div class="input-style-1">
+                                <label>Minggu</label>
+                                <input type="text" placeholder="Nama" name="minggu" value="14" />
+                            </div>
+                            <div class="input-style-1">
+                                <label>Libur</label>
+                                <input type="text" placeholder="libur" name="libur" value="" />
+                                <span class="text-muted">gunakan (,) untuk membuat multiple minggu libur</span>
+                            </div>
+                            <div class="select-style-1 ">
+                                <label>Angkatan</label>
+                                <div class="select-position">
+                                    <select class="angkatan" name="angkatan" required>
+                                        <option value="">Pilih</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="select-style-1 ">
+                                <label>Kelas</label>
+                                <div class="select-position">
+                                    <select class="kelas" name="kelas" required>
+                                        <option value="">Pilih</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="select-style-1 ">
+                                <label>Matkul</label>
+                                <div class="select-position">
+                                    <select class="matkul" name="matkul" required>
+                                        <option value="">Pilih</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="select-style-1 ">
+                                <textarea name="jsonData" class="jsonData" id="" style="display: none;" required></textarea>
                             </div>
                         </div>
-                        <div class="select-style-1 ">
-                            <label>Matkul</label>
-                            <div class="select-position">
-                                <select class="matkul" name="matkul" required >
-                                    <option value="">Pilih</option>
-                                    @foreach ($matkul as $m)
-                                        <option value="{{ $m->id }}">{{ $m->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="select-style-1 ">
-                            <label>Kelas</label>
-                            <div class="select-position" >
-                                <select class="kelas" name="kelas" required >
-                                    <option value="">Pilih</option>
-                                    @foreach ($kelas as $k)
-                                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="select-style-1 ">
-                            <textarea name="jsonData" class="jsonData" id="" style="display: none;" required ></textarea>
-                        </div>
-                    </div>
 
-                    <div class="table-responsive">
-                        <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Meeting To</th>
-                                    <th>Teaching Id</th>
-                                    <th>Periode Id</th>
-                                    <th>Date</th>
-                                    <th>Year</th>
-                                    <th>Month</th>
-                                    <th>Date</th>
-                                    <th>Hour</th>
-                                    <th>Minutes</th>
-                                    <th>Second</th>
-                                    <th>Unique Code</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                        <div class="table-responsive">
+                            <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Meeting To</th>
+                                        <th>Teaching Id</th>
+                                        <th>Periode Id</th>
+                                        <th>Date</th>
+                                        <th>Year</th>
+                                        <th>Month</th>
+                                        <th>Date</th>
+                                        <th>Hour</th>
+                                        <th>Minutes</th>
+                                        <th>Second</th>
+                                        <th>Unique Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
 
-                    <div class="">
-                        <button class="main-btn primary-btn btn-hover btn-sm mb-4" type="submit">Submit</button>
+                        <div class="">
+                            <button class="main-btn primary-btn btn-hover btn-sm mb-4" type="submit">Submit</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 @endsection
 
 @push('after-script')
@@ -131,7 +122,7 @@
         const canvas = document.getElementById('canvas');
         const resultDiv = document.getElementById('result');
         const decodedResultDiv = document.getElementById('decoded-result');
-        
+
         let totalPertemuan = 14;
         let satuMinggu = 7;
         let libur = [];
@@ -148,8 +139,7 @@
             data: jsonData,
             responsive: true,
             autoWidth: false,
-            columns: [
-                {
+            columns: [{
                     data: 'meetingTo'
                 },
                 {
@@ -195,9 +185,48 @@
             ]
         });
 
-        $('.angkatan').select2();
-        $('.matkul').select2();
-        $('.kelas').select2();
+        let angkatan = $('.angkatan').select2({
+            placeholder: 'Pilih Angkatan',
+            minimumInputLength: 1,
+            ajax: {
+                url: '{{ route('admin.filter.select.angkatan') }}',
+                dataType: 'json',
+            },
+            afterSelect: function(data) {
+                kelas.val(null).trigger('change');
+                matkul.val(null).trigger('change');
+            }
+        });
+        let kelas = $('.kelas').select2({
+            placeholder: 'Pilih Kelas',
+            minimumInputLength: 1,
+            ajax: {
+                url: '{{ route('admin.filter.select.kelas') }}',
+                data: function (params) {
+                    return {
+                        angkatan: $('.angkatan').val(),
+                        term: params.term // Jika Anda ingin mengirim juga nilai pencarian (term)
+                    };
+                }
+            },
+            afterSelect: function(data) {
+                matkul.val(null).trigger('change');
+            }
+        });
+        let matkul = $('.matkul').select2({
+            placeholder: 'Pilih Matkul',
+            minimumInputLength: 1,
+            ajax: {
+                url: '{{ route('admin.filter.select.matkul') }}',
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        kelas: $('.kelas').val(),
+                        term: params.term // Jika Anda ingin mengirim juga nilai pencarian (term)
+                    };
+                }
+            }
+        });
 
         dropArea.addEventListener('dragover', (event) => {
             event.preventDefault();
@@ -350,10 +379,10 @@
         $('input[name="minggu"]').on('change', function() {
             totalPertemuan = $(this).val();
 
-            if(libur.length > 0){
+            if (libur.length > 0) {
                 let newLibur = [];
                 for (let i = 0; i <= libur.length; i++) {
-                    if(libur[i] < totalPertemuan){
+                    if (libur[i] < totalPertemuan) {
                         newLibur.push(libur[i]);
                     }
                 }
@@ -362,7 +391,7 @@
                 $('input[name="libur"]').val(valueLibur);
             }
 
-            if(qrcodeData){
+            if (qrcodeData) {
                 tableList(qrcodeData);
             }
         });
@@ -374,7 +403,7 @@
 
             // loop dengan for
             for (let i = 0; i < libur.length; i++) {
-                if(libur[i] > totalPertemuan){
+                if (libur[i] > totalPertemuan) {
                     alert('Libur tidak boleh lebih dari total pertemuan');
                     libur = [];
                     break;
@@ -385,20 +414,21 @@
             // group jika ada yang sama 
             libur = libur.filter((item, index) => libur.indexOf(item) === index);
             // join kembali
-            libur.sort(function(a, b){return a - b});
+            libur.sort(function(a, b) {
+                return a - b
+            });
             let valueLibur = libur.join(',');
             $(this).val(valueLibur);
 
-            if(libur.length > 0){
+            if (libur.length > 0) {
                 totalPertemuan = parseInt(libur.length) + parseInt(totalPertemuan);
                 $('input[name="minggu"]').val(totalPertemuan);
             }
 
-            if(qrcodeData){
+            if (qrcodeData) {
 
                 tableList(qrcodeData);
             }
         });
-
     </script>
 @endpush
