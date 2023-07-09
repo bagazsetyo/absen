@@ -64,3 +64,8 @@ Route::prefix('mahasiswa')
     ->group(function () {
         Route::group([], __DIR__ . '/mahasiswa/qrcode.php');
     });
+
+
+Route::get('manual', function () {
+    return view('pages.manual');
+})->name('qrcode');
