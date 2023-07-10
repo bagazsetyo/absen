@@ -56,11 +56,7 @@ class QrcodeController extends Controller
                 ->addColumn('action', function($row){
                     $btn = '<div class="float-end">';
                     $btn .= '<a
-                                type="button"
-                                data-remote="'.route('admin.qrcode.edit', $row->id).'"
-                                data-title="Ubah Group"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal"
+                                href="'.route('admin.qrcode.edit', $row->id).'"
                                 class="btn btn-primary btn-sm"
                                 style="margin-right: 3px;">Edit</a>';
                     $btn .= '<a
@@ -173,7 +169,11 @@ class QrcodeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data = Qrcode::find($id);
+
+        return view('pages.admin.qrcode.edit')->with([
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -181,7 +181,19 @@ class QrcodeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = Qrcode::find($id);
+
+        $req = [
+            'teachingId' => $request->teachingId,
+            'periodId' => $request->periodId,
+            'date' => $request->date,
+            'meetingTo' => $request->meetingTo,
+            'uniqueCode' => $request->uniqueCode,
+        ];
+
+        $data->update($req);
+
+        return redirect()->route('admin.qrcode.index')->with('success', 'Berhasil mengubah data');
     }
 
     /**

@@ -3,326 +3,129 @@
 @section('title', 'Generate Qr code')
 
 @push('after-style')
-    <script src="{{ asset('assets/js/qrcode-reader.js') }}"></script>
-
-    <style>
-        #drop-area {
-            border: 2px dashed #ccc;
-            border-radius: 20px;
-            width: 100%;
-            height: 150px;
-            padding: 25px;
-            text-align: center;
-            margin: 0 auto;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #drop-area.highlight {
-            background-color: #f5f5f5;
-        }
-    </style>
 @endpush
 
 @section('content')
-    <div class="container-fluid">
-        <div class="pt-30">
-            <div class="card">
-                <div class="card-body">
-                    <div id="drop-area">
-                        <h3>Drag and Drop QR Code Image Here<br>or Click to Select File</h3>
-                        <input type="file" accept="image/*" id="qr-input" style="display: none;">
-                    </div>
-                    <canvas id="canvas" style="display: none;"></canvas>
-                    <div id="result"></div>
-                    <div id="decoded-result"></div>
-
-                    <div class="form pt-30">
-                        <div class="input-style-1">
-                            <label>Name</label>
-                            <input type="text" placeholder="Nama" />
-                        </div>
-                        <div class="select-style-1 ">
-                            <label>Angkatan</label>
-                            <div class="select-position">
-                                <select class="angkatan" name="state">
-                                    <option value="AL">Alabama</option>
-                                    <option value="WY">Wyoming</option>
-                                </select>
+    <form action="{{ route('admin.qrcode.update', $data->id) }}" method="post">
+        @method('PUT')
+        @csrf
+        <div class="container-fluid">
+            <div class="pt-30">
+                <div class="card">
+                    <div class="card-body">
+                        <h1>Generate manual QR code</h1>
+                            <div class="input-style-1">
+                                <label>Data</label>
+                                <input id="data" required value="{{ $data->uniqueCode }}">
                             </div>
-                        </div>
-                        <div class="select-style-1 ">
-                            <label>Matkul</label>
-                            <div class="select-position">
-                                <select class="matkul" name="state">
-                                    <option value="AL">Alabama</option>
-                                    <option value="WY">Wyoming</option>
-                                </select>
+                            <div class="input-style-1">
+                                <label>Teaching Id</label>
+                                <input id="teachingId" name="teachingId" required>
                             </div>
-                        </div>
-                        <div class="select-style-1 ">
-                            <label>Kelas</label>
-                            <div class="select-position">
-                                <select class="kelas" name="state">
-                                    <option value="AL">Alabama</option>
-                                    <option value="WY">Wyoming</option>
-                                </select>
+                            <div class="input-style-1">
+                                <label>Period Id</label>
+                                <input id="periodId" name="periodId" required>
                             </div>
+                            <div class="input-style-1">
+                                <label>Date</label>
+                                <input id="date" name="date" required>
+                                <span class="text-sm text-muted">Format YYYY-MM-DD-HH-II-SS (*tidak menggunakan tanda "-".
+                                    contoh 2023-12-30-10-40-20 => 20231230104020)</span>
+                            </div>
+                            <div class="input-style-1">
+                                <label>Meeting To</label>
+                                <input id="meetingTo" name="meetingTo" required>
+                            </div>
+                            <div class="input-style-1">
+                                <label>Output</label>
+                                <input id="output" name="uniqueCode" readonly>
+                            </div>
+                        <div class="">
+                            <button class="main-btn primary-btn btn-hover btn-sm mb-4" type="submit">Submit</button>
                         </div>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table dt-responsive nowrap" id="datatables" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Teaching Id</th>
-                                    <th>Periode Id</th>
-                                    <th>Date</th>
-                                    <th>Meeting To</th>
-                                    <th>Year</th>
-                                    <th>Month</th>
-                                    <th>Date</th>
-                                    <th>Hour</th>
-                                    <th>Minutes</th>
-                                    <th>Second</th>
-                                    <th>Unique Code</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 @endsection
 
 @push('after-script')
-    <script>
-        const dropArea = document.getElementById('drop-area');
-        const qrInput = document.getElementById('qr-input');
-        const canvas = document.getElementById('canvas');
-        const resultDiv = document.getElementById('result');
-        const decodedResultDiv = document.getElementById('decoded-result');
-        const namaBulan = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-        let jsonData = [];
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        let data = $('#data');
+        let teachingId = $('#teachingId');
+        let periodId = $('#periodId');
+        let date = $('#date');
+        let meetingTo = $('#meetingTo');
+        let output = $('#output');
+        let button = $('#generateQRCode');
+        let kurungKurawal = $('#kurungKurawal');
 
-        let datatables = $('#datatables').DataTable({
-            data: jsonData,
-            responsive: true,
-            autoWidth: false,
-            columns: [{
-                    data: 'teachingId'
-                },
-                {
-                    data: 'periodId'
-                },
-                {
-                    data: 'date'
-                },
-                {
-                    data: 'meetingTo'
-                },
-                {
-                    data: 'tahun'
-                },
-                {
-                    data: 'bulan',
-                    render: function(data, type, row) {
-                        if (type === 'display' || type === 'filter') {
-                            const index = parseInt(data) - 1;
-                            return namaBulan[index] || '';
-                        }
-                        return data;
-                    }
-                },
-                {
-                    data: 'tanggal'
-                },
-                {
-                    data: 'jam'
-                },
-                {
-                    data: 'menit'
-                },
-                {
-                    data: 'detik'
-                },
-                {
-                    data: 'uniqueCode'
-                },
-            ]
+        // windown on load 
+        $(window).on('load', function(){
+            data.trigger('change');
         });
 
-        $('.angkatan').select2();
-        $('.matkul').select2();
-        $('.kelas').select2();
+        data.on('change', function(e){
+            let value = e.target.value;
+            value = value.replace('{', '');
+            value = value.replace('}', '');
 
-        dropArea.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            dropArea.classList.add('highlight');
-        });
-
-        dropArea.addEventListener('dragleave', () => {
-            dropArea.classList.remove('highlight');
-        });
-
-        dropArea.addEventListener('drop', (event) => {
-            event.preventDefault();
-            dropArea.classList.remove('highlight');
-            const file = event.dataTransfer.files[0];
-            readQRCodeImage(file);
-        });
-
-        dropArea.addEventListener('click', () => {
-            qrInput.click();
-        });
-
-        qrInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            readQRCodeImage(file);
-        });
-
-        function readQRCodeImage(file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const image = new Image();
-                image.onload = function() {
-                    canvas.width = image.width;
-                    canvas.height = image.height;
-                    const context = canvas.getContext('2d');
-                    context.drawImage(image, 0, 0, image.width, image.height);
-                    const imageData = context.getImageData(0, 0, image.width, image.height);
-                    const code = jsQR(imageData.data, image.width, image.height);
-                    if (code) {
-                        resultDiv.innerText = code.data;
-                        const cleanedData = code.data.replace("{", "").replace("}", "");
-                        const decodedResult = atob(cleanedData);
-
-                        // Convert to JSON
-                        const jsonData = {};
-                        const pairs = decodedResult.split('|');
-                        pairs.forEach(pair => {
-                            const [key, value] = pair.split(':');
-                            jsonData[key] = value;
-                        });
-
-                        const input = jsonData.date;
-                        const splittedArray = input.match(/.{1,2}/g);
-                        const formattedDate = {
-                            year: `${splittedArray[0]}${splittedArray[1]}`,
-                            month: splittedArray[2],
-                            day: splittedArray[3],
-                            hour: splittedArray[4],
-                            minute: splittedArray[5],
-                            second: splittedArray[6]
-                        };
-                        decodedResultDiv.innerText = JSON.stringify(jsonData);
-                        tableList(jsonData);
-                    } else {
-                        resultDiv.innerText = 'QR code not found';
-                        decodedResultDiv.innerText = '';
-                    }
-                };
-                image.src = event.target.result;
-            };
-
-            reader.readAsDataURL(file);
-        }
-
-        function tableList(data) {
-            let totalPertemuan = 14;
-            let totalPertemuanSekarang = 0;
-            let satuMinggu = 7;
-
-            const dateString = data.date;
-            const dateArray = [
-                parseInt(dateString.substring(0, 4)),
-                parseInt(dateString.substring(4, 6)),
-                parseInt(dateString.substring(6, 8)),
-                parseInt(dateString.substring(8, 10)),
-                parseInt(dateString.substring(10, 12)),
-                parseInt(dateString.substring(12, 14))
-            ];
-            let date = new Date(...dateArray);
-            date.setMonth(date.getMonth() - 1);
-
-            let selisih = data.meetingTo * 7;
-            date.setDate(date.getDate() - selisih);
-
-            let teachingId = parseInt(data.teachingId) - parseInt(data.meetingTo);
-
-            let dataPertemuan = [];
-            for (i = 1; i <= totalPertemuan; i++) {
-                let thisTeachingId = teachingId + i;
-
-                let dateEveryWeek = new Date(date);
-                dateEveryWeek.setDate(dateEveryWeek.getDate() + (satuMinggu * i));
-
-                let thisYear = dateEveryWeek.getFullYear();
-                let thisMonth = String(dateEveryWeek.getMonth() + 1).padStart(2, '0');
-                let thisDate = String(dateEveryWeek.getDate()).padStart(2, '0');
-                let thisHour = String(dateEveryWeek.getHours()).padStart(2, '0');
-                let thisMinute = String(dateEveryWeek.getMinutes()).padStart(2, '0');
-                let thisSecond = String(dateEveryWeek.getSeconds()).padStart(2, '0');
-
-                let fullDate = `${thisYear}${thisMonth}${thisDate}${thisHour}${thisMinute}${thisSecond}`;
-
-                let uniqueCode = `teachingId:${thisTeachingId}|periodId:${data.periodId}|date:${fullDate}|meetingTo:${i}`;
-                let uniqueCodeBase64 = btoa(uniqueCode);
-                let mainData = {
-                    teachingId: thisTeachingId,
-                    periodId: data.periodId,
-                    date: fullDate,
-                    meetingTo: i,
-                    tahun: thisYear,
-                    bulan: thisMonth,
-                    tanggal: thisDate,
-                    jam: thisHour,
-                    menit: thisMinute,
-                    detik: thisSecond,
-                    uniqueCode: uniqueCodeBase64,
-                    minggu_ke: i
-                };
-
-                dataPertemuan.push(mainData);
+            // decode base64 string
+            let decodedString = atob(value);
+            // if not valid base64 string 
+            if (decodedString == '') {
+                alert('Invalid base64 string');
+                return;
             }
-            jsonData = [];
-            jsonData.push(...dataPertemuan);
 
-            // reload data table 
-            datatables.clear().rows.add(jsonData).draw();
+            // split | to array
+            let splitted = decodedString.split('|');
+            splitted.forEach(function(item){
+                let splittedItem = item.split(':');
+                let input = $('#' + splittedItem[0]);
+                input.val(splittedItem[1]);
+            });
 
+            generateDataQrcode();
 
-            // for(i = 0; i < totalPertemuan; i++){
-            //     date.setDate(date.getDate() + satuMinggu);
-            //     console.log(date);
-            // }
+        });
 
+        $(document).on('change', '#teachingId, #periodId, #date, #meetingTo, #kurungKurawal', function(e){
+            generateDataQrcode();
+        });
 
-            // console.log(data);
-            // var table = document.getElementById("data");
-            // var row = table.insertRow(1);
-            // var cell1 = row.insertCell(0);
-            // var cell2 = row.insertCell(1);
-            // var cell3 = row.insertCell(2);
-            // var cell4 = row.insertCell(3);
-            // var cell5 = row.insertCell(4);
+        button.on('click', function(e){
+            generateQRCode();
+        });
 
-            // cell1.innerHTML = "1";
-            // cell2.innerHTML = data.teaching_id;
-            // cell3.innerHTML = data.period_id;
-            // cell4.innerHTML = data.date;
-            // cell5.innerHTML = data.meeting_to;
+        function generateDataQrcode()
+        {
+            let teachingIdValue = teachingId.val();
+            let periodIdValue = periodId.val();
+            let dateValue = date.val();
+            let meetingToValue = meetingTo.val();
+
+            let data = 'teachingId:' + teachingIdValue + '|periodId:' + periodIdValue + '|date:' + dateValue + '|meetingTo:' + meetingToValue;
+
+            let encodedString = btoa(data);
+            encodedString = '{' + encodedString + '}';
+            output.val(encodedString);
         }
-    </script>
+
+        function generateQRCode() {
+          let website = output.val();
+          if (website) {
+            let qrcodeContainer = document.getElementById("qrcode");
+            qrcodeContainer.innerHTML = "";
+            new QRCode(qrcodeContainer, website);
+            document.getElementById("qrcode-container").style.display = "block";
+          } else {
+            alert("Please enter a valid URL");
+          }
+        }
+    } );
+</script>
 @endpush
-
-
-2023061093639
-20230610093639

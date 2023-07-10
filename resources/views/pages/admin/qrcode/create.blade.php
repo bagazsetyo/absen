@@ -187,7 +187,6 @@
 
         let angkatan = $('.angkatan').select2({
             placeholder: 'Pilih Angkatan',
-            minimumInputLength: 1,
             ajax: {
                 url: '{{ route('admin.filter.select.angkatan') }}',
                 dataType: 'json',
@@ -199,7 +198,6 @@
         });
         let kelas = $('.kelas').select2({
             placeholder: 'Pilih Kelas',
-            minimumInputLength: 1,
             ajax: {
                 url: '{{ route('admin.filter.select.kelas') }}',
                 data: function (params) {
@@ -215,7 +213,6 @@
         });
         let matkul = $('.matkul').select2({
             placeholder: 'Pilih Matkul',
-            minimumInputLength: 1,
             ajax: {
                 url: '{{ route('admin.filter.select.matkul') }}',
                 dataType: 'json',
