@@ -129,6 +129,12 @@ class MatkulController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = Matkul::findOrFail($id);
+        $data->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menghapus data matkul',
+        ]);
     }
 }
