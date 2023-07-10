@@ -51,27 +51,25 @@ class QrcodeServices
         $date = date('Y-m-d');
         list($year, $month, $day) = explode('-', $date);
 
+        $hour = date('H');
+
         $qrcode = Qrcode::where('id_kelas', $this->user->kelas)
                     ->where('id_angkatan', $this->user->angkatan)
                     ->where('tahun', $year)
                     ->where('bulan', $month)
                     ->where('tanggal', $day)
+                    ->where('jam', '>=', $hour)
                     ->with('matkul')
-                    ->get();
+                    ->orderBy('jam', 'asc')
+                    ->first();
 
-        if($qrcode->isEmpty()){
+        if(!$qrcode){
             return [
                 'code' => Response::HTTP_NOT_FOUND,
                 'message' => __('messages.qrcodeNotFound')
             ];
         }
-        // loop qrcode 
-        foreach ($qrcode as $key => $value) {
-            if(date('H:i:s') >= $value->matkul->jam_mulai && date('H:i:s') <= $value->matkul->jam_selesai){
-                $this->qrcode = $value;
-                break;
-            } 
-        }
+        $this->qrcode = $qrcode;
         return $qrcode;
     }
 
