@@ -96,9 +96,11 @@ class MatkulController extends Controller
     {
         $kelas = Kelas::all();
         $data = Matkul::findOrFail($id);
+        $angkatan = Angkatan::all();
         return view('pages.admin.matkul.edit')->with([
             'data' => $data,
             'kelas' => $kelas,
+            'angkatan' => $angkatan
         ]);
     }
 

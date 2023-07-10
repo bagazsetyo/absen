@@ -90,4 +90,23 @@
             }
         });
     });
+    $('#filterAngkatan').on('change', function(e){
+        $.ajax({
+            url: "{{ route('admin.filter.kelas') }}",
+            type: "POST",
+            data: {
+                angkatan: $(this).val(),
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(data) {
+                let filterKelas = $('#filterKelas');
+                filterKelas.empty();
+                filterKelas.append('<option value="">pilih</option>');
+                $.each(data, function(key, value) {
+                    filterKelas.append('<option value="' + value.id + '">' + value.nama + '</option>');
+                });
+            }
+        })
+    })
+
 </script>
