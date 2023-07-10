@@ -31,14 +31,6 @@
       <label>Output</label>
       <input type="url" id="output" disabled>
     </div>
-    <div class="check-style-1">
-        <div class="form-check checkbox-style mb-20">
-        <input class="form-check-input" type="checkbox" value="" id="kurungKurawal">
-        <label class="form-check-label" for="kurungKurawal">
-            Tambahkan Kurung Kurawal
-        </label>
-        </div>
-    </div>  
     <button type="button" id="generateQRCode" class="main-btn primary-btn btn-hover">
         Generate QR Code
     </button>
@@ -104,9 +96,7 @@
             let data = 'teachingId:' + teachingIdValue + '|periodId:' + periodIdValue + '|date:' + dateValue + '|meetingTo:' + meetingToValue;
 
             let encodedString = btoa(data);
-            if (kurungKurawal.is(':checked')) {
-                encodedString = '{' + encodedString + '}';
-            }
+            encodedString = '{' + encodedString + '}';
             output.val(encodedString);
         }
 

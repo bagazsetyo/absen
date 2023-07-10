@@ -129,6 +129,7 @@ class QrcodeController extends Controller
                 $uniqueCode = "teachingId:".$data->teachingId."|periodId:".$data->periodId."|date:".$newDate."|meetingTo:".$data->meetingTo;
     
                 $uniqueCode = base64_encode($uniqueCode);
+                $uniqueCode = "{". $uniqueCode ."}";
                 $qrcode[] = [
                     'id_angkatan' => $request->angkatan,
                     'id_kelas' => $request->kelas,
