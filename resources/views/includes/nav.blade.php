@@ -98,7 +98,7 @@
                 class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="profile"
               >
-                <li>
+                {{-- <li>
                   <a href="#0">
                     <i class="lni lni-user"></i> View Profile
                   </a>
@@ -113,7 +113,7 @@
                 </li>
                 <li>
                   <a href="#0"> <i class="lni lni-cog"></i> Settings </a>
-                </li>
+                </li> --}}
                 <li>
                   <form action="{{ route('logout') }}" method="POST">
                     @csrf

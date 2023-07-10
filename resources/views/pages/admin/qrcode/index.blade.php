@@ -21,6 +21,9 @@
                     <a href="{{ route('admin.qrcode.create') }}" class="main-btn primary-btn btn-hover btn-sm mb-4">
                         Tambah Qrcode
                     </a>
+                    <a href="{{ route('admin.qrcode.create.json') }}" class="main-btn primary-btn btn-hover btn-sm mb-4">
+                        Tambah Qrcode Usin Json
+                    </a>
                     @endif
 
                     <div class="row">

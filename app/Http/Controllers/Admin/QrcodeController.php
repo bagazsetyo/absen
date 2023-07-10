@@ -97,14 +97,7 @@ class QrcodeController extends Controller
      */
     public function create()
     {
-        $angkatan = Angkatan::all();
-        $kelas = Kelas::all();
-        $matkul = Matkul::all();
-        return view('pages.admin.qrcode.create')->with([
-            'angkatan' => $angkatan,
-            'kelas' => $kelas,
-            'matkul' => $matkul,
-        ]);
+        return view('pages.admin.qrcode.create');
     }
 
     /**
@@ -150,7 +143,6 @@ class QrcodeController extends Controller
     
             return redirect()->route('admin.qrcode.index')->with('success', 'Berhasil menambahkan data');
         }catch (\Exception $e){
-            dd($e->getMessage());
             DB::rollBack();
             return redirect()->route('admin.qrcode.index')->with('error', 'Gagal menambahkan data');
         }
@@ -207,5 +199,47 @@ class QrcodeController extends Controller
             'success' => true,
             'message' => 'Berhasil menghapus data'
         ]);
+    }
+
+    public function createJson()
+    {
+        return view('pages.admin.qrcode.json')->with([]);
+    }
+
+    public function storeJson(Request $request)
+    {
+        DB::beginTransaction();
+        try{
+
+            $listData = json_decode($request->dataQrCode);
+    
+            $qrcode = [];
+            foreach($listData as $data){
+                $qrcode[] = [
+                    'id_angkatan' => $request->angkatan,
+                    'id_kelas' => $request->kelas,
+                    'id_matkul' => $request->matkul,
+                    'teachingId' => $data->teachingId,
+                    'periodId' => $data->periodId,
+                    'date' => $data->date,
+                    'meetingTo' => $data->meetingTo,
+                    'tahun' => $data->tahun,
+                    'bulan' => $data->bulan,
+                    'tanggal' => $data->tanggal,
+                    'jam' => $data->jam,
+                    'menit' => $data->menit,
+                    'detik' => "00",
+                    'uniqueCode' => $data->uniqueCode,
+                    'nama' => $request->nama,
+                ];
+            }
+            Qrcode::insert($qrcode);
+            
+            DB::commit();
+            return redirect()->route('admin.qrcode.index')->with('success', 'Berhasil menambahkan data');
+        }catch (\Exception $e){
+            DB::rollBack();
+            return redirect()->route('admin.qrcode.index')->with('error', 'Gagal menambahkan data');
+        }
     }
 }
