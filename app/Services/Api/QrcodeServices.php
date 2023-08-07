@@ -60,6 +60,7 @@ class QrcodeServices
                     ->where('tanggal', $day)
                     ->where('jam', '>=', $hour)
                     ->with('matkul')
+                    ->whereHas('matkul')
                     ->orderBy('jam', 'asc')
                     ->first();
 

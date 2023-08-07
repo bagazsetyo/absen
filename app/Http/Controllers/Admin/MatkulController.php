@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Angkatan;
 use App\Models\Kelas;
 use App\Models\Matkul;
+use App\Models\Qrcode;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class MatkulController extends Controller
@@ -129,8 +132,18 @@ class MatkulController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Matkul::findOrFail($id);
-        $data->delete();
+        DB::beginTransaction();
+        try{
+            $data = Matkul::findOrFail($id);
+            $data->delete();
+
+            $qrcode = Qrcode::where('id_matkul', $id)->delete();
+            DB::commit();
+        }catch (Exception $e){
+            DB::rollBack();
+        }
+
+
 
         return response()->json([
             'success' => true,
