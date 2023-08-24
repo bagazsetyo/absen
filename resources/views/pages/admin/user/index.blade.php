@@ -22,7 +22,8 @@
                             <th>Id</th>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>Email</th>
+                            <th>NPM</th>
+                            <th>Wa</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -45,7 +46,8 @@
             {data: 'id', name: 'id', searchable: false, orderable: false, visible: false},
             {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
             {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
+            {data: 'npm', name: 'npm'},
+            {data: 'wa', name: 'wa'},
             {data: 'action', name: 'action', width: '200px', maxWidth: '200px', searchable: false, orderable: false,},
         ],
         responsive: true,

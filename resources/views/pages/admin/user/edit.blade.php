@@ -1,17 +1,18 @@
 <div>
     <form method="post" id="create">
         @csrf
+        @method('PUT')
         <div class="form-group input-style-1">
             <label for="">Nama</label>
-            <input type="text" name="name" id="name" class="form-control" placeholder="Tes">
+            <input type="text" name="name" id="name" class="form-control" placeholder="Tes" value="{{ $user->name }}">
         </div>
         <div class="form-group input-style-1">
             <label for="">NPM</label>
-            <input type="text" name="npm" id="npm" class="form-control" placeholder="211322">
+            <input type="text" name="npm" id="npm" class="form-control" placeholder="211322" value="{{ $user->npm }}">
         </div>
         <div class="form-group input-style-1">
             <label for="">WA</label>
-            <input type="text" name="wa" id="wa" class="form-control" placeholder="08123">
+            <input type="text" name="wa" id="wa" class="form-control" placeholder="08123" value="{{ $user->wa }}">
         </div>
         <div class="select-style-1 ">
             <label>Angkatan</label>
@@ -19,7 +20,7 @@
                 <select class="angkatan" name="angkatan" required id="filterAngkatan">
                     <option value="">Pilih Angkatan</option>
                     @foreach ($angkatan as $a)
-                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
+                        <option value="{{ $a->id }}" @selected($user->angkatan == $a->id)>{{ $a->nama }}</option>
                     @endforeach
                 </select>
             </div>
@@ -29,6 +30,9 @@
             <div class="select-position">
                 <select class="kelas" name="kelas" required id="filterKelas">
                     <option value="">Pilih Kelas</option>
+                    @foreach ($kelas as $k)
+                        <option value="{{ $k->id }}" @selected($user->kelas == $k->id)>{{ $k->nama }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -78,7 +82,7 @@
         let formData = new FormData(this);
         $.ajax({
             type:'POST',
-            url: '{{ route('admin.user.store') }}',
+            url: '{{ route('admin.user.update', $user->id) }}',
             data: formData,
             contentType: false,
             processData: false,

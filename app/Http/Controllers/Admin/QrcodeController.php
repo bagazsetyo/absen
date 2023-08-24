@@ -32,10 +32,8 @@ class QrcodeController extends Controller
                 }
                 
                 if(!$isAdmin){
-                    $query->where('id_kelas', Auth::user()->id_kelas);
+                    $query->where('id_kelas', Auth::user()->kelas);
                 }
-
-
 
                 if($request->filterAngkatan){
                     $query->where('id_angkatan', $request->filterAngkatan);
@@ -80,7 +78,7 @@ class QrcodeController extends Controller
         
         $matkul = Matkul::query();
         if(!$isAdmin){
-            $matkul->where('id_kelas', Auth::user()->id_kelas);
+            $matkul->where('id_kelas', Auth::user()->kelas);
         }
 
         $matkul = $matkul->get();

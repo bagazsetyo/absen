@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Angkatan;
+use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
@@ -22,7 +26,7 @@ class UserController extends Controller
                     $btn = '<div class="float-end">';
                     $btn .= '<a
                                 type="button"
-                                data-remote="'.route('admin.angkatan.edit', $row->id).'"
+                                data-remote="'.route('admin.user.edit', $row->id).'"
                                 data-title="Ubah Group"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal"
@@ -30,7 +34,7 @@ class UserController extends Controller
                                 style="margin-right: 3px;">Edit</a>';
                     $btn .= '<a
                                 type="button"
-                                data-remote="'.route('admin.angkatan.destroy', $row->id).'"
+                                data-remote="'.route('admin.user.destroy', $row->id).'"
                                 data-title="Hapus Group"
                                 data-table="group"
                                 data-bs-toggle="modal"
@@ -51,7 +55,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $angkatan = Angkatan::all();
+        return view('pages.admin.user.create')->with([
+            'angkatan' => $angkatan
+        ]);
     }
 
     /**
@@ -59,7 +66,42 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name',
+            'email',
+            'wa',
+            'npm',
+            'angkatan',
+            'kelas',
+        ]);
+
+        DB::beginTransaction();
+        try{
+            $user = $request->only([
+                'name',
+                'email',
+                'wa',
+                'npm',
+                'angkatan',
+                'kelas',
+            ]);
+    
+            $createUser = User::create($user);
+            
+            $createUser->assignRole(['mahasiswa']);
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil ditambah!'
+            ]);
+        }catch(\Exception $e){
+            DB::rollback();
+            
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -75,7 +117,14 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $angkatan = Angkatan::all();
+        $user = User::find($id);
+        $kelas = Kelas::where('id_angkatan', $user->angkatan)->get();
+        return view('pages.admin.user.edit')->with([
+            'angkatan' => $angkatan,
+            'user' => $user,
+            'kelas' => $kelas
+        ]);
     }
 
     /**
@@ -83,7 +132,36 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name',
+            'email',
+            'wa',
+            'npm',
+            'angkatan',
+            'kelas',
+        ]);
+
+        DB::beginTransaction();
+        try{
+            $user = $request->only([
+                'name',
+                'email',
+                'wa',
+                'npm',
+                'angkatan',
+                'kelas',
+            ]);
+    
+            $createUser = User::find($id);
+            $createUser->update($user);
+        }catch(\Exception $e){
+            DB::rollback();
+            
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -91,6 +169,11 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id)->delete($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus!'
+        ]);
     }
 }
